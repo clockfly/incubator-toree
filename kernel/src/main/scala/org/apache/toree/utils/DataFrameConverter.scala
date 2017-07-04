@@ -18,16 +18,11 @@
 package org.apache.toree.utils
 
 import org.apache.spark.sql.{Dataset, Row}
-import org.apache.toree.plugins.Plugin
 import play.api.libs.json.{JsObject, Json}
 
 import scala.util.{Failure, Try}
-import org.apache.toree.plugins.annotations.Init
 
-class DataFrameConverter extends Plugin with LogLike {
-  @Init def init() = {
-    register(this)
-  }
+class DataFrameConverter extends LogLike {
 
   def convert(
      df: Dataset[Row], outputType: String, limit: Int = 10

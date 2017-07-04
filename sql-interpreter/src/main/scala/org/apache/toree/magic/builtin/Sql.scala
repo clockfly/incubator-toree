@@ -20,14 +20,12 @@ import org.apache.toree.interpreter.{ExecuteError, ExecuteAborted}
 import org.apache.toree.kernel.interpreter.sql.{SqlInterpreter, SqlException}
 import org.apache.toree.magic.{MagicOutput, CellMagic}
 import org.apache.toree.magic.dependencies.IncludeKernel
-import org.apache.toree.plugins.annotations.Event
 
 /**
  * Represents the magic interface to use the SQL interpreter.
  */
 class Sql extends CellMagic with IncludeKernel {
 
-  @Event(name = "sql")
   override def execute(code: String): MagicOutput = {
     val sparkR = kernel.interpreter("SQL")
 

@@ -23,7 +23,6 @@ import org.apache.toree.interpreter.{ExecuteAborted, ExecuteError, ExecuteFailur
 import org.apache.toree.kernel.protocol.v5._
 import org.apache.toree.magic._
 import org.apache.toree.magic.dependencies.{IncludeKernelInterpreter, IncludeOutputStream}
-import org.apache.toree.plugins.annotations.{Event, Init}
 import org.apache.toree.utils.{ArgumentParsingSupport, DataFrameConverter, LogLike}
 
 import scala.util.Try
@@ -63,7 +62,7 @@ class DataFrame extends CellMagic with IncludeKernelInterpreter
     "json" -> MIMEType.ApplicationJson
   )
 
-  @Init def initMethod(dataFrameConverter: DataFrameConverter) = {
+  def initMethod(dataFrameConverter: DataFrameConverter) = {
     _dataFrameConverter = dataFrameConverter
   }
   private def printStream = new PrintStream(outputStream)
@@ -126,8 +125,7 @@ class DataFrame extends CellMagic with IncludeKernelInterpreter
     parser.printHelpOn(stringWriter)
     CellMagicOutput(MIMEType.PlainText -> stringWriter.toString)
   }
-  
-  @Event(name = "dataframe")
+
   override def execute(code: String): CellMagicOutput = {
     val lines = code.trim.split("\n")
     Try({

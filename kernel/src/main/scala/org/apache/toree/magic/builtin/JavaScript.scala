@@ -24,8 +24,6 @@ import org.apache.toree.kernel.protocol.v5.MIMEType
 import org.apache.toree.magic._
 import org.apache.toree.magic.dependencies.IncludeOutputStream
 import org.apache.toree.utils.ArgumentParsingSupport
-import org.slf4j.LoggerFactory
-import org.apache.toree.plugins.annotations.Event
 
 class JavaScript extends CellMagic with ArgumentParsingSupport
   with IncludeOutputStream {
@@ -33,7 +31,6 @@ class JavaScript extends CellMagic with ArgumentParsingSupport
   // Lazy because the outputStream is not provided at construction
   private def printStream = new PrintStream(outputStream)
   
-  @Event(name = "javascript")
   override def execute(code: String): CellMagicOutput = {
     def printHelpAndReturn: CellMagicOutput = {
       printHelp(printStream, """%JavaScript <string_code>""")

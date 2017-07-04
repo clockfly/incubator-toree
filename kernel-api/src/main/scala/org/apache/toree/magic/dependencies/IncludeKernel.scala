@@ -19,13 +19,11 @@ package org.apache.toree.magic.dependencies
 
 import org.apache.toree.kernel.api.KernelLike
 import org.apache.toree.magic.Magic
-import org.apache.toree.plugins.Plugin
-import org.apache.toree.plugins.annotations.Init
 
-trait IncludeKernel extends Plugin {
+trait IncludeKernel {
   this: Magic =>
 
-  @Init protected def init(newKernel: KernelLike) = _kernel = newKernel
+  protected def init(newKernel: KernelLike) = _kernel = newKernel
 
   private var _kernel: KernelLike = _
   def kernel: KernelLike = _kernel

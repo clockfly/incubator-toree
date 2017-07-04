@@ -20,13 +20,12 @@ import org.apache.toree.interpreter.{ExecuteError, ExecuteAborted}
 import org.apache.toree.kernel.interpreter.pyspark.{PySparkInterpreter, PySparkException}
 import org.apache.toree.magic.{MagicOutput, CellMagic}
 import org.apache.toree.magic.dependencies.IncludeKernel
-import org.apache.toree.plugins.annotations.Event
 
 /**
  * Represents the magic interface to use the PySpark interpreter.
  */
 class PySpark extends CellMagic with IncludeKernel {
-  @Event(name = "pyspark")
+
   override def execute(code: String): MagicOutput = {
     val pySpark = kernel.interpreter("PySpark")
 

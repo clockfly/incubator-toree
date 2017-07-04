@@ -33,7 +33,6 @@ import play.api.libs.json.JsPath
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.util.{Failure, Success}
-import org.apache.toree.plugins.PreRunCell
 
 /**
  * Receives an ExecuteRequest KernelMessage and forwards the ExecuteRequest
@@ -74,11 +73,6 @@ class ExecuteRequestHandler(
         actorLoader.load(SystemActorType.ExecuteRequestRelay),
         (executeRequest, km, outputStream)
       ).mapTo[(ExecuteReply, ExecuteResult)]
-      
-      if (!executeRequest.silent && kernel.pluginManager != null){
-        import org.apache.toree.plugins.Implicits._
-        kernel.pluginManager.fireEvent(PreRunCell, "outputStream" -> outputStream)
-      }
 
       // Flush the output stream after code execution completes to ensure
       // stream messages are sent prior to idle status messages.

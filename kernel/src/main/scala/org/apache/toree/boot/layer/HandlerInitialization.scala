@@ -18,7 +18,6 @@
 package org.apache.toree.boot.layer
 
 import akka.actor.{ActorRef, ActorSystem, Props}
-import org.apache.toree.comm.{CommRegistrar, CommStorage}
 import org.apache.toree.interpreter.Interpreter
 import org.apache.toree.kernel.api.Kernel
 import org.apache.toree.kernel.protocol.v5.MessageType.MessageType
@@ -31,7 +30,6 @@ import org.apache.toree.kernel.protocol.v5.magic.MagicParser
 import org.apache.toree.kernel.protocol.v5.relay.ExecuteRequestRelay
 import org.apache.toree.kernel.protocol.v5.{MessageType, SocketType, SystemActorType, LanguageInfo}
 import org.apache.toree.magic.MagicManager
-import org.apache.toree.plugins.PluginManager
 import org.apache.toree.utils.LogLike
 
 /**
@@ -47,15 +45,12 @@ trait HandlerInitialization {
    * @param kernel The kernel api needed for registration
    * @param interpreter The main interpreter needed for registration
    * @param magicManager The magic manager needed for registration
-   * @param commRegistrar The comm registrar needed for registration
-   * @param commStorage The comm storage needed for registration
    */
   def initializeHandlers(
     actorSystem: ActorSystem, actorLoader: ActorLoader,
     kernel: Kernel,
-    interpreter: Interpreter, pluginManager: PluginManager,
-    magicManager: MagicManager,   commRegistrar: CommRegistrar,
-    commStorage: CommStorage,
+    interpreter: Interpreter,
+    magicManager: MagicManager,
     responseMap: collection.mutable.Map[String, ActorRef]
   ): Unit
 }
@@ -73,29 +68,25 @@ trait StandardHandlerInitialization extends HandlerInitialization {
    * @param actorLoader The actor loader needed for registration
    * @param kernel The kernel api needed for registration
    * @param interpreter The main interpreter needed for registration
-   * @param pluginManager The plugin manager needed for registration
-   * @param commRegistrar The comm registrar needed for registration
-   * @param commStorage The comm storage needed for registration
    */
   def initializeHandlers(
     actorSystem: ActorSystem, actorLoader: ActorLoader,
     kernel: Kernel,
-    interpreter: Interpreter, pluginManager: PluginManager,
-    magicManager: MagicManager, commRegistrar: CommRegistrar,
-    commStorage: CommStorage,
+    interpreter: Interpreter,
+    magicManager: MagicManager,
     responseMap: collection.mutable.Map[String, ActorRef]
   ): Unit = {
     initializeKernelHandlers(
-      actorSystem, actorLoader, interpreter, kernel, commRegistrar, commStorage, responseMap
+      actorSystem, actorLoader, interpreter, kernel, responseMap
     )
     initializeSystemActors(
-      actorSystem, actorLoader, interpreter, pluginManager, magicManager
+      actorSystem, actorLoader, interpreter, magicManager
     )
   }
 
   private def initializeSystemActors(
     actorSystem: ActorSystem, actorLoader: ActorLoader,
-    interpreter: Interpreter, pluginManager: PluginManager,
+    interpreter: Interpreter,
     magicManager: MagicManager
   ): Unit = {
     logger.debug("Creating interpreter actor")
@@ -108,7 +99,7 @@ trait StandardHandlerInitialization extends HandlerInitialization {
     val magicParser = new MagicParser(magicManager)
     val executeRequestRelayActor = actorSystem.actorOf(
       Props(classOf[ExecuteRequestRelay],
-        actorLoader, pluginManager, magicParser
+        actorLoader, magicParser
       ),
       name = SystemActorType.ExecuteRequestRelay.toString
     )
@@ -117,7 +108,6 @@ trait StandardHandlerInitialization extends HandlerInitialization {
   private def initializeKernelHandlers(
     actorSystem: ActorSystem, actorLoader: ActorLoader,
     interpreter: Interpreter, kernel: Kernel,
-    commRegistrar: CommRegistrar, commStorage: CommStorage,
     responseMap: collection.mutable.Map[String, ActorRef]
   ): Unit = {
     def initializeRequestHandler[T](clazz: Class[T], messageType: MessageType, extraArguments: AnyRef*) = {
@@ -143,7 +133,7 @@ trait StandardHandlerInitialization extends HandlerInitialization {
     def initializeCommHandler[T](clazz: Class[T], messageType: MessageType) = {
       logger.debug("Creating %s handler".format(messageType.toString))
       actorSystem.actorOf(
-        Props(clazz, actorLoader, commRegistrar, commStorage),
+        Props(clazz, actorLoader),
         name = messageType.toString
       )
     }
@@ -170,20 +160,12 @@ trait StandardHandlerInitialization extends HandlerInitialization {
       MessageType.Incoming.ExecuteRequest, kernel)
     initializeRequestHandler(classOf[KernelInfoRequestHandler],
       MessageType.Incoming.KernelInfoRequest, internalInfo)
-    initializeRequestHandler(classOf[CommInfoRequestHandler],
-      MessageType.Incoming.CommInfoRequest, commStorage)
     initializeRequestHandler(classOf[CodeCompleteHandler],
       MessageType.Incoming.CompleteRequest)
     initializeRequestHandler(classOf[IsCompleteHandler],
       MessageType.Incoming.IsCompleteRequest)
     initializeInputHandler(classOf[InputRequestReplyHandler],
       MessageType.Incoming.InputReply)
-    initializeCommHandler(classOf[CommOpenHandler],
-      MessageType.Incoming.CommOpen)
-    initializeCommHandler(classOf[CommMsgHandler],
-      MessageType.Incoming.CommMsg)
-    initializeCommHandler(classOf[CommCloseHandler],
-      MessageType.Incoming.CommClose)
 
     //  These are handlers for messages leaving the kernel through the sockets
     initializeSocketHandler(SocketType.Shell, MessageType.Outgoing.KernelInfoReply)

@@ -20,13 +20,11 @@ import org.apache.toree.interpreter.{ExecuteAborted, ExecuteError}
 import org.apache.toree.kernel.interpreter.scala.{ScalaException, ScalaInterpreter}
 import org.apache.toree.magic.dependencies.IncludeKernel
 import org.apache.toree.magic.{CellMagic, MagicOutput}
-import org.apache.toree.plugins.annotations.Event
 /**
  * Represents the magic interface to use the Scala interpreter.
  */
 class Scala extends CellMagic with IncludeKernel {
 
-  @Event(name = "scala")
   override def execute(code: String): MagicOutput = {
     val scala = kernel.interpreter("Scala")
 

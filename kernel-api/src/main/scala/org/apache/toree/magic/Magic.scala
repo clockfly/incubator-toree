@@ -17,13 +17,10 @@
 
 package org.apache.toree.magic
 
-import org.apache.toree.plugins.Plugin
-import org.apache.toree.plugins.annotations.{Event, DepName}
-
 /**
  * Represents the base structure for a magic that is loaded and executed.
  */
-trait Magic extends Plugin {
+trait Magic {
   /**
    * Execute a magic.
    *

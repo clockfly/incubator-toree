@@ -23,6 +23,7 @@ version in ThisBuild := Properties.envOrElse("VERSION", "0.0.0-dev") +
 isSnapshot in ThisBuild := Properties.envOrElse("IS_SNAPSHOT","true").toBoolean
 organization in ThisBuild := "org.apache.toree.kernel"
 crossScalaVersions in ThisBuild := Seq("2.11.8")
+
 scalaVersion in ThisBuild := (crossScalaVersions in ThisBuild).value.head
 Dependencies.sparkVersion in ThisBuild := {
   val envVar = "APACHE_SPARK_VERSION"
@@ -73,6 +74,7 @@ testOptions in (ThisBuild, Test) += Tests.Argument("-oDF")
 
 // Build-wide dependencies
 resolvers in ThisBuild  ++= Seq(
+  "OSS Sonatype" at "https://repo1.maven.org/maven2/",
   "Apache Snapshots" at "http://repository.apache.org/snapshots/",
   "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
   "Jitpack" at "https://jitpack.io"
@@ -122,18 +124,12 @@ credentials in ThisBuild+= Credentials(Path.userHome / ".ivy2" / ".credentials")
 lazy val root = (project in file("."))
   .settings(name := "toree")
   .aggregate(
-    macros,protocol,plugins,communication,kernelApi,client,scalaInterpreter,sqlInterpreter,pysparkInterpreter,sparkrInterpreter,kernel
+    protocol,communication,kernelApi,scalaInterpreter,sqlInterpreter,pysparkInterpreter,sparkrInterpreter,kernel
   )
   .dependsOn(
-    macros,protocol,communication,kernelApi,client,scalaInterpreter,sqlInterpreter,pysparkInterpreter,sparkrInterpreter,kernel
+    protocol,communication,kernelApi,scalaInterpreter,sqlInterpreter,pysparkInterpreter,sparkrInterpreter,kernel
   )
 
-/**
-  * Project representing macros in Scala that must be compiled separately from
-  * any other project using them.
-  */
-lazy val macros = (project in file("macros"))
-  .settings(name := "toree-macros")
 
 /**
   * Project representing the IPython kernel message protocol in Scala. Used
@@ -141,14 +137,7 @@ lazy val macros = (project in file("macros"))
   */
 lazy val protocol = (project in file("protocol"))
   .settings(name := "toree-protocol")
-  .dependsOn(macros)
 
-/**
-  * Project representing base plugin system for the Toree infrastructure.
-  */
-lazy val plugins = (project in file("plugins"))
-  .settings(name := "toree-plugins")
-  .dependsOn(macros)
 
 /**
   * Project representing forms of communication used as input/output for the
@@ -156,7 +145,7 @@ lazy val plugins = (project in file("plugins"))
   */
 lazy val communication = (project in file("communication"))
   .settings(name := "toree-communication")
-  .dependsOn(macros, protocol)
+  .dependsOn(protocol)
 
 /**
 * Project representing the kernel-api code used by the Spark Kernel. Others can
@@ -164,42 +153,35 @@ lazy val communication = (project in file("communication"))
 */
 lazy val kernelApi = (project in file("kernel-api"))
   .settings(name := "toree-kernel-api")
-  .dependsOn(macros, plugins)
 
-/**
-* Project representing the client code for connecting to the kernel backend.
-*/
-lazy val client = (project in file("client"))
-  .settings(name := "toree-client")
-  .dependsOn(macros, protocol, communication)
 
 /**
 * Project represents the scala interpreter used by the Spark Kernel.
 */
 lazy val scalaInterpreter = (project in file("scala-interpreter"))
   .settings(name := "toree-scala-interpreter")
-  .dependsOn(plugins, protocol, kernelApi)
+  .dependsOn(protocol, kernelApi)
 
 /**
 * Project represents the SQL interpreter used by the Spark Kernel.
 */
 lazy val sqlInterpreter = (project in file("sql-interpreter"))
   .settings(name := "toree-sql-interpreter")
-  .dependsOn(plugins, protocol, kernelApi)
+  .dependsOn(protocol, kernelApi)
 
 /**
 * Project represents the Python interpreter used by the Spark Kernel.
 */
 lazy val pysparkInterpreter = (project in file("pyspark-interpreter"))
   .settings(name := "toree-pyspark-interpreter")
-  .dependsOn(plugins, protocol, kernelApi)
+  .dependsOn(protocol, kernelApi)
 
 /**
 * Project represents the R interpreter used by the Spark Kernel.
 */
 lazy val sparkrInterpreter = (project in file("sparkr-interpreter"))
   .settings(name := "toree-sparkr-interpreter")
-  .dependsOn(plugins, protocol, kernelApi)
+  .dependsOn(protocol, kernelApi)
 
 /**
 * Project representing the kernel code for the Spark Kernel backend.
@@ -207,7 +189,6 @@ lazy val sparkrInterpreter = (project in file("sparkr-interpreter"))
 lazy val kernel = (project in file("kernel"))
   .settings(name := "toree-kernel")
   .dependsOn(
-    macros % "test->test;compile->compile",
     protocol % "test->test;compile->compile",
     communication % "test->test;compile->compile",
     kernelApi % "test->test;compile->compile",
@@ -238,4 +219,3 @@ assemblyShadeRules in assembly := Seq(
 
 test in assembly := {}
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
-aggregate in assembly := false

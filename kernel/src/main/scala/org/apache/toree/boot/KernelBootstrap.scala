@@ -94,9 +94,7 @@ class KernelBootstrap(config: Config) extends LogLike {
     publishStatus(KernelStatusType.Starting)
 
     // Initialize components needed elsewhere
-    val (commStorage, commRegistrar, commManager, interpreter,
-      kernel, dependencyDownloader,
-      magicManager, pluginManager, responseMap) =
+    val (interpreter, kernel, dependencyDownloader, magicManager, responseMap) =
       initializeComponents(
         config      = config,
         actorLoader = actorLoader
@@ -111,9 +109,6 @@ class KernelBootstrap(config: Config) extends LogLike {
       actorLoader   = actorLoader,
       kernel        = kernel,
       interpreter   = interpreter,
-      commRegistrar = commRegistrar,
-      commStorage   = commStorage,
-      pluginManager = pluginManager,
       magicManager = magicManager,
       responseMap   = responseMap
     )

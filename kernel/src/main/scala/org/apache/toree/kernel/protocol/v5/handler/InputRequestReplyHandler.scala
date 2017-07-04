@@ -18,10 +18,9 @@
 package org.apache.toree.kernel.protocol.v5.handler
 
 import akka.actor.ActorRef
-import org.apache.toree.comm.{CommRegistrar, CommStorage}
 import org.apache.toree.communication.utils.OrderedSupport
 import org.apache.toree.kernel.protocol.v5.{SystemActorType, KernelMessage}
-import org.apache.toree.kernel.protocol.v5.content.{InputReply, CommOpen}
+import org.apache.toree.kernel.protocol.v5.content.{InputReply}
 import org.apache.toree.kernel.protocol.v5.kernel.{Utilities, ActorLoader}
 import org.apache.toree.kernel.protocol.v5
 import org.apache.toree.utils.MessageLogSupport

@@ -24,7 +24,6 @@ import org.apache.toree.kernel.protocol.v5.kernel.{SimpleActorLoader, ActorLoade
 import org.apache.toree.communication.security.{SecurityActorType, SignatureManagerActor}
 import org.apache.toree.kernel.protocol.v5.kernel.socket._
 import org.apache.toree.kernel.protocol.v5._
-import org.apache.toree.kernel.protocol.v5.content.{CommClose, CommMsg, CommOpen}
 import org.apache.toree.kernel.protocol.v5.relay.KernelMessageRelay
 import org.apache.toree.utils.LogLike
 import com.typesafe.config.Config
@@ -86,18 +85,7 @@ trait StandardBareInitialization extends BareInitialization { this: LogLike =>
     logger.debug("Creating kernel message relay actor")
     val kernelMessageRelayActor = actorSystem.actorOf(
       Props(
-        classOf[KernelMessageRelay], actorLoader, true,
-        Map(
-          CommOpen.toTypeString -> MessageType.Incoming.CommOpen.toString,
-          CommMsg.toTypeString -> MessageType.Incoming.CommMsg.toString,
-          CommClose.toTypeString -> MessageType.Incoming.CommClose.toString
-        ),
-        Map(
-          CommOpen.toTypeString -> MessageType.Outgoing.CommOpen.toString,
-          CommMsg.toTypeString -> MessageType.Outgoing.CommMsg.toString,
-          CommClose.toTypeString -> MessageType.Outgoing.CommClose.toString
-        )
-      ),
+        classOf[KernelMessageRelay], actorLoader, true),
       name = SystemActorType.KernelMessageRelay.toString
     )
 

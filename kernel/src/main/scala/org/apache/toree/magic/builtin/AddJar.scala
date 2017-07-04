@@ -26,7 +26,6 @@ import org.apache.toree.magic.builtin.AddJar._
 import org.apache.toree.magic.dependencies._
 import org.apache.toree.utils.{ArgumentParsingSupport, DownloadSupport, LogLike, FileUtils}
 import com.typesafe.config.Config
-import org.apache.toree.plugins.annotations.Event
 
 object AddJar {
 
@@ -49,15 +48,11 @@ object AddJar {
 class AddJar
   extends LineMagic with IncludeInterpreter
   with IncludeOutputStream with DownloadSupport with ArgumentParsingSupport
-  with IncludeKernel with IncludePluginManager with IncludeConfig with LogLike
+  with IncludeKernel with IncludeConfig with LogLike
 {
   // Option to mark re-downloading of jars
   private val _force =
     parser.accepts("f", "forces re-download of specified jar")
-
-  // Option to mark re-downloading of jars
-  private val _magic =
-    parser.accepts("magic", "loads jar as a magic extension")
 
   // Lazy because the outputStream is not provided at construction
   private def printStream = new PrintStream(outputStream)
@@ -84,7 +79,6 @@ class AddJar
    *
    * @param code The line containing the location of the jar
    */
-  @Event(name = "addjar")
   override def execute(code: String): Unit = {
     val nonOptionArgs = parseArgs(code.trim)
 
@@ -133,11 +127,6 @@ class AddJar
       printStream.println(s"Using cached version of $jarName")
     }
 
-    if (_magic) {
-      val plugins = pluginManager.loadPlugins(fileDownloadLocation)
-      pluginManager.initializePlugins(plugins)
-    } else {
-      kernel.addJars(fileDownloadLocation.toURI)
-    }
+    kernel.addJars(fileDownloadLocation.toURI)
   }
 }

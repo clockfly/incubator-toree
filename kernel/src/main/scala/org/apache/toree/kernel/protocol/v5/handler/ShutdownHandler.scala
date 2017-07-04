@@ -17,14 +17,11 @@
 
 package org.apache.toree.kernel.protocol.v5.handler
 
-import org.apache.toree.comm.{CommRegistrar, CommStorage, KernelCommWriter}
-import org.apache.toree.kernel.protocol.v5.content.{ShutdownReply, ShutdownRequest, CommOpen}
-import org.apache.toree.kernel.protocol.v5.kernel.{ActorLoader, Utilities}
+import org.apache.toree.kernel.protocol.v5.content.{ShutdownReply}
+import org.apache.toree.kernel.protocol.v5.kernel.{ActorLoader}
 import org.apache.toree.kernel.protocol.v5._
 import org.apache.toree.security.KernelSecurityManager
 import org.apache.toree.utils.MessageLogSupport
-import play.api.data.validation.ValidationError
-import play.api.libs.json.JsPath
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

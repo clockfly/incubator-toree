@@ -19,13 +19,11 @@ package org.apache.toree.magic.dependencies
 
 import org.apache.toree.dependencies.DependencyDownloader
 import org.apache.toree.magic.Magic
-import org.apache.toree.plugins.Plugin
-import org.apache.toree.plugins.annotations.Init
 
-trait IncludeDependencyDownloader extends Plugin {
+trait IncludeDependencyDownloader {
   this: Magic =>
 
-  @Init protected def init(newDependencyDownloader: DependencyDownloader) =
+  protected def init(newDependencyDownloader: DependencyDownloader) =
     _dependencyDownloader = newDependencyDownloader
 
   private var _dependencyDownloader: DependencyDownloader = _

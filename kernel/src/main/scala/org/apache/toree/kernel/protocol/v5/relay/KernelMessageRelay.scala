@@ -36,16 +36,12 @@ import scala.util.{Failure, Random, Success, Try}
  * system.
  * @param actorLoader The ActorLoader used by this class for finding actors for
  *                    relaying messages
- * @param incomingSpecialCases The special cases for incoming messages
- * @param outgoingSpecialCases The special cases for outgoing messages
  * @param useSignatureManager Whether or not to use signature verification and
  *                            generation
  */
 case class KernelMessageRelay(
   actorLoader: ActorLoader,
-  useSignatureManager: Boolean,
-  incomingSpecialCases: Map[String, String] = new HashMap[String, String](),
-  outgoingSpecialCases: Map[String, String] = new HashMap[String, String]()
+  useSignatureManager: Boolean
 ) extends OrderedSupport with MessageLogSupport  {
   // NOTE: Required to provide the execution context for futures with akka
   import context._
@@ -74,12 +70,6 @@ case class KernelMessageRelay(
   private def incomingRelay(kernelMessage: KernelMessage) = {
     var messageTypeString = kernelMessage.header.msg_type
 
-    // If this is a special case, transform the message type accordingly
-    if (incomingSpecialCases.contains(messageTypeString)) {
-      logger.debug(s"$messageTypeString is a special incoming case!")
-      messageTypeString = incomingSpecialCases(messageTypeString)
-    }
-
     Try(MessageType.withName(messageTypeString)) match {
       case Success(messageName) => relay(messageName, kernelMessage)
       case Failure(_)           =>
@@ -89,12 +79,6 @@ case class KernelMessageRelay(
 
   private def outgoingRelay(kernelMessage: KernelMessage) = {
     var messageTypeString = kernelMessage.header.msg_type
-
-    // If this is a special case, transform the message type accordingly
-    if (outgoingSpecialCases.contains(messageTypeString)) {
-      logger.debug(s"$messageTypeString is a special outgoing case!")
-      messageTypeString = outgoingSpecialCases(messageTypeString)
-    }
 
     Try(MessageType.withName(messageTypeString)) match {
       case Success(messageName) => relay(messageName, kernelMessage)

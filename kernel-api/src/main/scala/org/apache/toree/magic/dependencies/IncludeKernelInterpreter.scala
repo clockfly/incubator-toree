@@ -19,13 +19,11 @@ package org.apache.toree.magic.dependencies
 
 import org.apache.toree.interpreter.Interpreter
 import org.apache.toree.magic.Magic
-import org.apache.toree.plugins.Plugin
-import org.apache.toree.plugins.annotations.Init
 
-trait IncludeKernelInterpreter extends Plugin {
+trait IncludeKernelInterpreter {
   this: Magic =>
 
-  @Init protected def init(newInterpreter: Interpreter) =
+  protected def init(newInterpreter: Interpreter) =
     _interpreter = newInterpreter
 
   private var _interpreter: Interpreter = _

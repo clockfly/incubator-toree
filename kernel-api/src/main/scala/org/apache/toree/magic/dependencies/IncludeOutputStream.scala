@@ -18,17 +18,13 @@
 package org.apache.toree.magic.dependencies
 
 import java.io.OutputStream
-
-import org.apache.toree.interpreter.Interpreter
 import org.apache.toree.magic.Magic
-import org.apache.toree.plugins.Plugin
-import org.apache.toree.plugins.annotations.{DepName, Event, Init}
 
-trait IncludeOutputStream extends Plugin {
+trait IncludeOutputStream {
   this: Magic =>
 
-  @Event(name = "newOutputStream") protected def newOutputStream(
-    @DepName(name = "outputStream") newOutputStream: OutputStream
+  protected def newOutputStream(
+    newOutputStream: OutputStream
   ) = _outputStream = newOutputStream
 
   private var _outputStream: OutputStream = _

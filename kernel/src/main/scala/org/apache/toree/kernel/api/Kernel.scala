@@ -25,9 +25,7 @@ import com.typesafe.config.Config
 import org.apache.spark.api.java.JavaSparkContext
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.toree.annotations.Experimental
 import org.apache.toree.boot.layer.InterpreterManager
-import org.apache.toree.comm.CommManager
 import org.apache.toree.global
 import org.apache.toree.global.ExecuteRequestState
 import org.apache.toree.interpreter.Results.Result
@@ -38,7 +36,6 @@ import org.apache.toree.kernel.protocol.v5.magic.MagicParser
 import org.apache.toree.kernel.protocol.v5.stream.KernelOutputStream
 import org.apache.toree.kernel.protocol.v5.{KMBuilder, KernelMessage, MIMEType}
 import org.apache.toree.magic.MagicManager
-import org.apache.toree.plugins.PluginManager
 import org.apache.toree.utils.LogLike
 import scala.language.dynamics
 import scala.reflect.runtime.universe._
@@ -51,16 +48,12 @@ import scala.concurrent.{Future, Await}
  *
  * @param _config The configuration used when starting the kernel
  * @param interpreterManager The interpreter manager to expose in this instance
- * @param comm The Comm manager to expose in this instance
  * @param actorLoader The actor loader to use for message relaying
  */
-@Experimental
 class Kernel (
   private val _config: Config,
   private val actorLoader: ActorLoader,
-  val interpreterManager: InterpreterManager,
-  val comm: CommManager,
-  val pluginManager: PluginManager
+  val interpreterManager: InterpreterManager
 ) extends KernelLike with LogLike {
 
   /**
@@ -110,7 +103,7 @@ class Kernel (
   /**
    * Represents magics available through the kernel.
    */
-  val magics = new MagicManager(pluginManager)
+  val magics = new MagicManager()
 
   /**
    * Represents magic parsing functionality.

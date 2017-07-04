@@ -20,13 +20,11 @@ import org.apache.toree.magic.LineMagic
 import org.apache.toree.magic.dependencies.IncludeOutputStream
 import java.io.PrintStream
 import org.apache.toree.kernel.api.KernelOptions
-import org.apache.toree.plugins.annotations.Event
 
 
 class ShowTypes extends LineMagic with IncludeOutputStream {
   private def printStream = new PrintStream(outputStream)
 
-  @Event(name = "showtypes")
   override def execute(code: String): Unit = {
     code match {
       case "on" =>

@@ -20,14 +20,12 @@ import org.apache.toree.interpreter.{ExecuteError, ExecuteAborted}
 import org.apache.toree.kernel.interpreter.sparkr.{SparkRInterpreter, SparkRException}
 import org.apache.toree.magic.{MagicOutput, CellMagic}
 import org.apache.toree.magic.dependencies.IncludeKernel
-import org.apache.toree.plugins.annotations.Event
 
 /**
  * Represents the magic interface to use the SparkR interpreter.
  */
 class SparkR extends CellMagic with IncludeKernel {
 
-  @Event(name = "sparkr")
   override def execute(code: String): MagicOutput = {
     val sparkR = kernel.interpreter("SparkR")
 

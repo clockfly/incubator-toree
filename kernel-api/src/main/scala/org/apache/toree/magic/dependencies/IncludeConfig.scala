@@ -19,13 +19,11 @@ package org.apache.toree.magic.dependencies
 
 import org.apache.toree.magic.{Magic}
 import com.typesafe.config.Config
-import org.apache.toree.plugins.Plugin
-import org.apache.toree.plugins.annotations.Init
 
-trait IncludeConfig extends Plugin {
+trait IncludeConfig {
   this: Magic =>
 
-  @Init protected def init(config: Config) = _config = config
+  protected def init(config: Config) = _config = config
 
   private var _config: Config = _
   def config: Config = _config
