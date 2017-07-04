@@ -238,42 +238,6 @@ class Kernel (
   }
 
   /**
-   * Returns a print stream to be used for communication back to clients
-   * via standard out.
-   *
-   * @return The print stream instance or an error if the stream info is
-   *         not found
-   */
-  override def out: PrintStream = {
-    val kernelMessage = lastKernelMessage()
-
-    constructStream(currentOutputStream, currentOutputKernelMessage, kernelMessage, { kernelMessage =>
-      val outputStream = this.factory(parentMessage = kernelMessage)
-        .newKernelOutputStream("stdout")
-
-      new PrintStream(outputStream)
-    })
-  }
-
-  /**
-   * Returns a print stream to be used for communication back to clients
-   * via standard error.
-   *
-   * @return The print stream instance or an error if the stream info is
-   *         not found
-   */
-  override def err: PrintStream = {
-    val kernelMessage = lastKernelMessage()
-
-    constructStream(currentErrorStream, currentErrorKernelMessage, kernelMessage, { kernelMessage =>
-      val outputStream = this.factory(parentMessage = kernelMessage)
-        .newKernelOutputStream("stderr")
-
-      new PrintStream(outputStream)
-    })
-  }
-
-  /**
    * Returns an input stream to be used to receive information from the client.
    *
    * @return The input stream instance or an error if the stream info is

@@ -86,16 +86,10 @@ package object v5 {
       val InspectRequest  = Value("inspect_request")
       val KernelInfoRequest  = Value("kernel_info_request")
       val ShutdownRequest = Value("shutdown_request")
-      val CommInfoRequest = Value("comm_info_request")
       val IsCompleteRequest = Value("is_complete_request")
 
       //  Stdin Router/Dealer Messages
       val InputReply      = Value("input_reply")
-
-      // NOTE: These are not consistent with the type as they would conflict
-      val CommOpen        = Value("incoming_comm_open")
-      val CommMsg         = Value("incoming_comm_msg")
-      val CommClose       = Value("incoming_comm_close")
     }
 
     /**
@@ -110,7 +104,6 @@ package object v5 {
       val InspectReply    = Value("inspect_reply")
       val KernelInfoReply    = Value("kernel_info_reply")
       val ShutdownReply   = Value("shutdown_reply")
-      val CommInfoReply   = Value("comm_info_reply")
       val IsCompleteReply = Value("is_complete_reply")
 
       //  Stdin Router/Dealer Messages
@@ -124,11 +117,6 @@ package object v5 {
       val ExecuteResult   = Value("execute_result")
       val Status          = Value("status")
       val Stream          = Value("stream")
-
-      // NOTE: These are not consistent with the type as they would conflict
-      val CommOpen        = Value("outgoing_comm_open")
-      val CommMsg         = Value("outgoing_comm_msg")
-      val CommClose       = Value("outgoing_comm_close")
     }
   }
 

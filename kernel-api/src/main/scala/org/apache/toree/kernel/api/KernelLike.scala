@@ -65,32 +65,6 @@ trait KernelLike {
   def display: DisplayMethodsLike
 
   /**
-   * Returns a print stream to be used for communication back to clients
-   * via standard out.
-   *
-   * @return The print stream instance or an error if the stream info is
-   *         not found
-   */
-  def out: PrintStream
-
-  /**
-   * Returns a print stream to be used for communication back to clients
-   * via standard error.
-   *
-   * @return The print stream instance or an error if the stream info is
-   *         not found
-   */
-  def err: PrintStream
-
-  /**
-   * Returns an input stream to be used to receive information from the client.
-   *
-   * @return The input stream instance or an error if the stream info is
-   *         not found
-   */
-  def in: InputStream
-
-  /**
    * Represents data to be shared using the kernel as the middleman.
    *
    * @note Using Java structure to enable other languages to have easy access!

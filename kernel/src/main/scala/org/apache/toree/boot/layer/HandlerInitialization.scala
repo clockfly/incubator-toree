@@ -129,15 +129,6 @@ trait StandardHandlerInitialization extends HandlerInitialization {
       )
     }
 
-    // TODO: Figure out how to pass variable number of arguments to actor
-    def initializeCommHandler[T](clazz: Class[T], messageType: MessageType) = {
-      logger.debug("Creating %s handler".format(messageType.toString))
-      actorSystem.actorOf(
-        Props(clazz, actorLoader),
-        name = messageType.toString
-      )
-    }
-
     def initializeSocketHandler(socketType: SocketType, messageType: MessageType): Unit = {
       logger.debug("Creating %s to %s socket handler ".format(messageType.toString ,socketType.toString))
       actorSystem.actorOf(
@@ -169,22 +160,19 @@ trait StandardHandlerInitialization extends HandlerInitialization {
 
     //  These are handlers for messages leaving the kernel through the sockets
     initializeSocketHandler(SocketType.Shell, MessageType.Outgoing.KernelInfoReply)
-    initializeSocketHandler(SocketType.Shell, MessageType.Outgoing.CommInfoReply)
     initializeSocketHandler(SocketType.Shell, MessageType.Outgoing.ExecuteReply)
     initializeSocketHandler(SocketType.Shell, MessageType.Outgoing.CompleteReply)
     initializeSocketHandler(SocketType.Shell, MessageType.Outgoing.IsCompleteReply)
 
     initializeSocketHandler(SocketType.StdIn, MessageType.Outgoing.InputRequest)
 
+    initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.ExecuteInput)
     initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.ExecuteResult)
-    initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.Stream)
     initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.DisplayData)
     initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.ClearOutput)
-    initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.ExecuteInput)
+
+    initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.Stream)
     initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.Status)
     initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.Error)
-    initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.CommOpen)
-    initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.CommMsg)
-    initializeSocketHandler(SocketType.IOPub, MessageType.Outgoing.CommClose)
   }
 }
