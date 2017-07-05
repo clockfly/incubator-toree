@@ -243,7 +243,7 @@ class Kernel (
    * @return The input stream instance or an error if the stream info is
    *         not found
    */
-  override def in: InputStream = {
+  def in: InputStream = {
     val kernelMessage = lastKernelMessage()
 
     constructStream(currentInputStream, currentInputKernelMessage, kernelMessage, { kernelMessage =>

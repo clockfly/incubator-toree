@@ -220,8 +220,9 @@ dist/toree-pip/toree-$(BASE_VERSION).tar.gz: dist/toree
 	@cp -R dist/toree/licenses dist/toree-pip/licenses
 	@cp -rf etc/pip_install/* dist/toree-pip/.
 	@$(GEN_PIP_PACKAGE_INFO)
-	@$(DOCKER) --user=root $(IMAGE) python setup.py sdist --dist-dir=.
-	@$(DOCKER) -p 8888:8888 --user=root	$(IMAGE) bash -c	'pip install toree-$(BASE_VERSION).tar.gz && jupyter toree install'
+	cd dist/toree-pip/; python3.5 setup.py sdist --dist-dir=.
+#	@$(DOCKER) --user=root $(IMAGE) python setup.py sdist --dist-dir=.
+#	@$(DOCKER) -p 8888:8888 --user=root	$(IMAGE) bash -c	'pip install toree-$(BASE_VERSION).tar.gz && jupyter toree install'
 #	-@(cd dist/toree-pip; find . -not -name 'toree-$(VERSION).tar.gz' -maxdepth 1 | xargs rm -r )
 
 pip-release: dist/toree-pip/toree-$(BASE_VERSION).tar.gz

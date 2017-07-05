@@ -67,9 +67,6 @@ trait MessageLogSupport extends LogLike {
       MessageType.Incoming.InspectRequest.toString.equals(messageType) ||
       MessageType.Incoming.ShutdownRequest.toString.equals(messageType)||
       MessageType.Incoming.KernelInfoRequest.toString.equals(messageType) ||
-      MessageType.Incoming.CommOpen.toString.equals(messageType) ||
-      MessageType.Incoming.CommMsg.toString.equals(messageType) ||
-      MessageType.Incoming.CommClose.toString.equals(messageType) ||
       MessageType.Incoming.IsCompleteRequest.toString.equals(messageType)
   }
 

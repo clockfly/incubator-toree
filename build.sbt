@@ -217,5 +217,7 @@ assemblyShadeRules in assembly := Seq(
   ShadeRule.rename("org.objectweb.asm.**" -> "shadeasm.@0").inAll
 )
 
+
+aggregate in assembly := false
 test in assembly := {}
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
