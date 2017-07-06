@@ -77,20 +77,24 @@ trait ScalaInterpreterSpecific extends SettingsProducerLike { this: ScalaInterpr
 
   protected def refreshDefinitions(): Unit = {
     iMain.definedTerms.foreach(termName => {
+      logger.info(s"=======================${termName.longString}" )
+      scala.Console.out.println(s"=======================${termName.longString}" )
       val termNameString = termName.toString
       val termTypeString = iMain.typeOfTerm(termNameString).toLongString
       iMain.valueOfTerm(termNameString) match {
         case Some(termValue)  =>
           val modifiers = buildModifierList(termNameString)
-          logger.debug(s"Rebinding of $termNameString as " +
+          logger.info(s"Rebinding of $termNameString as " +
             s"${modifiers.mkString(" ")} $termTypeString")
-          Try(iMain.beSilentDuring {
+          scala.Console.out.println(s"Rebinding of $termNameString as " +
+            s"${modifiers.mkString(" ")} $termTypeString")
+          Try(
             iMain.bind(
               termNameString, termTypeString, termValue, modifiers
-            )
-          })
+            ))
         case None             =>
-          logger.debug(s"Ignoring rebinding of $termNameString")
+          logger.info(s"Ignoring rebinding of $termNameString")
+          scala.Console.out.println(s"Ignoring rebinding of $termNameString")
       }
     })
   }
@@ -109,17 +113,21 @@ trait ScalaInterpreterSpecific extends SettingsProducerLike { this: ScalaInterpr
   override def addJars(jars: URL*): Unit = {
     //jars.foreach(_runtimeClassloader.addJar)
 
+    logger.info(s"=======================reinitializeSymbols" )
+    scala.Console.out.println(s"=======================reinitializeSymbols" )
     // Enable Scala class support
     reinitializeSymbols()
 
 //    jars.foreach(_runtimeClassloader.addJar)
 //    updateCompilerClassPath(jars : _*)
 
-
+    logger.info(s"=======================addUrlsToClassPath" )
+    scala.Console.out.println(s"=======================addUrlsToClassPath" )
     iMain.addUrlsToClassPath(jars: _*)
 //    iMain.
 //    _runtimeClassloader =
-
+    logger.info(s"=======================refreshDefinitions" )
+    scala.Console.out.println(s"=======================refreshDefinitions" )
     // Refresh all of our variables
     refreshDefinitions()
 
