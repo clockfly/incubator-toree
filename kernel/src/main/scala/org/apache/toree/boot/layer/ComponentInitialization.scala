@@ -71,7 +71,7 @@ trait StandardComponentInitialization extends ComponentInitialization {
 
     val dependencyDownloader = initializeDependencyDownloader(config)
 
-    val kernel = initializeKernel(config, actorLoader, interpreterManager)
+    val kernel = initializeKernel(config, actorLoader, interpreterManager, dependencyDownloader)
 
     interpreterManager.initializeInterpreters(kernel)
 
@@ -117,7 +117,8 @@ trait StandardComponentInitialization extends ComponentInitialization {
   private def initializeKernel(
     config: Config,
     actorLoader: ActorLoader,
-    interpreterManager: InterpreterManager) = {
+    interpreterManager: InterpreterManager,
+    dependencyDownloader: DependencyDownloader) = {
 
     //kernel has a dependency on ScalaInterpreter to get the ClassServerURI for the SparkConf
     //we need to pre-start the ScalaInterpreter
@@ -127,7 +128,8 @@ trait StandardComponentInitialization extends ComponentInitialization {
     val kernel = new Kernel(
       config,
       actorLoader,
-      interpreterManager
+      interpreterManager,
+      dependencyDownloader
     ){
       override protected[toree] def createSparkConf(conf: SparkConf) = {
         val theConf = super.createSparkConf(conf)

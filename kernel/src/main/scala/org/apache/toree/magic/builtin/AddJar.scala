@@ -46,9 +46,8 @@ object AddJar {
 }
 
 class AddJar
-  extends LineMagic with IncludeInterpreter
-  with IncludeOutputStream with DownloadSupport with ArgumentParsingSupport
-  with IncludeKernel with IncludeConfig with LogLike
+  extends LineMagic with IncludeOutputStream with DownloadSupport with ArgumentParsingSupport
+  with IncludeKernel with LogLike
 {
   // Option to mark re-downloading of jars
   private val _force =
@@ -105,7 +104,7 @@ class AddJar
         )
     }
 
-    val downloadLocation = getJarDir(config) + "/" + jarName
+    val downloadLocation = getJarDir(kernel.config) + "/" + jarName
 
     logger.debug("Downloading jar to %s".format(downloadLocation))
 

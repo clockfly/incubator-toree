@@ -19,10 +19,10 @@ package org.apache.toree.magic.builtin
 
 import java.io.{PrintStream, StringWriter}
 
-import org.apache.toree.interpreter.{ExecuteAborted, ExecuteError, ExecuteFailure, Results}
+import org.apache.toree.interpreter.{ExecuteError, Results}
 import org.apache.toree.kernel.protocol.v5._
 import org.apache.toree.magic._
-import org.apache.toree.magic.dependencies.{IncludeKernelInterpreter, IncludeOutputStream}
+import org.apache.toree.magic.dependencies.{IncludeKernel, IncludeOutputStream}
 import org.apache.toree.utils.{ArgumentParsingSupport, DataFrameConverter, LogLike}
 
 import scala.util.Try
@@ -53,8 +53,7 @@ object DataFrameResponses {
     """.stripMargin
 }
 
-class DataFrame extends CellMagic with IncludeKernelInterpreter
-  with IncludeOutputStream with ArgumentParsingSupport with LogLike {
+class DataFrame extends CellMagic with IncludeKernel with IncludeOutputStream with ArgumentParsingSupport with LogLike {
   private var _dataFrameConverter: DataFrameConverter = _
   private val outputTypeMap = Map[String, String](
     "html" -> MIMEType.TextHtml,
@@ -87,11 +86,11 @@ class DataFrame extends CellMagic with IncludeKernelInterpreter
   }
   
   private def convertToJson(rddCode: String): CellMagicOutput = {
-    val (result, message) = kernelInterpreter.interpret(rddCode)
+    val (result, message) = kernel.interpreter.interpret(rddCode)
     result match {
       case Results.Success =>
-        val rddVarName = kernelInterpreter.lastExecutionVariableName.get
-        kernelInterpreter.read(rddVarName).map(variableVal => {
+        val rddVarName = kernel.interpreter.lastExecutionVariableName.get
+        kernel.interpreter.read(rddVarName).map(variableVal => {
           _dataFrameConverter.convert(
             variableVal.asInstanceOf[org.apache.spark.sql.DataFrame],
             outputType,

@@ -19,10 +19,12 @@ package org.apache.toree.kernel.api
 
 import java.io.{InputStream, PrintStream}
 import java.net.URI
+
 import com.typesafe.config.Config
 import org.apache.spark.api.java.JavaSparkContext
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SparkSession
+import org.apache.toree.dependencies.DependencyDownloader
 import org.apache.toree.interpreter.ExecuteOutput
 
 /**
@@ -71,6 +73,7 @@ trait KernelLike {
    */
   val data: java.util.Map[String, Any]
 
+  def interpreter: org.apache.toree.interpreter.Interpreter
 
   def interpreter(name: String): Option[org.apache.toree.interpreter.Interpreter]
 
@@ -85,4 +88,6 @@ trait KernelLike {
   def javaSparkContext: JavaSparkContext
 
   def sparkSession: SparkSession
+
+  def dependencyDownloader: DependencyDownloader
 }

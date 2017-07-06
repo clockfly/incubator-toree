@@ -18,15 +18,15 @@
 package org.apache.toree.magic.builtin
 
 import java.io.{File, PrintStream}
+
+import org.apache.toree.dependencies.DependencyDownloader
 import org.apache.toree.magic._
 import org.apache.toree.magic.dependencies._
 import org.apache.toree.utils.ArgumentParsingSupport
 
 
 
-class AddDeps extends LineMagic with IncludeInterpreter
-  with IncludeOutputStream with ArgumentParsingSupport
-  with IncludeDependencyDownloader with IncludeKernel
+class AddDeps extends LineMagic with IncludeOutputStream with ArgumentParsingSupport with IncludeKernel
 {
 
   private def printStream = new PrintStream(outputStream)
@@ -54,6 +54,8 @@ class AddDeps extends LineMagic with IncludeInterpreter
   private val _credentials = parser.accepts(
     "credential", "Adds a credential file to be used to the list"
   ).withRequiredArg().ofType(classOf[String])
+
+  private def dependencyDownloader: DependencyDownloader = kernel.dependencyDownloader
 
   /**
    * Execute a magic representing a line magic.

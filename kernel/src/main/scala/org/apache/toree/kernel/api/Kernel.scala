@@ -20,12 +20,14 @@ package org.apache.toree.kernel.api
 import java.io.{InputStream, PrintStream}
 import java.net.URI
 import java.util.concurrent.{ConcurrentHashMap, TimeUnit, TimeoutException}
+
 import scala.collection.mutable
 import com.typesafe.config.Config
 import org.apache.spark.api.java.JavaSparkContext
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.toree.boot.layer.InterpreterManager
+import org.apache.toree.dependencies.DependencyDownloader
 import org.apache.toree.global
 import org.apache.toree.global.ExecuteRequestState
 import org.apache.toree.interpreter.Results.Result
@@ -37,11 +39,12 @@ import org.apache.toree.kernel.protocol.v5.stream.KernelOutputStream
 import org.apache.toree.kernel.protocol.v5.{KMBuilder, KernelMessage, MIMEType}
 import org.apache.toree.magic.MagicManager
 import org.apache.toree.utils.LogLike
+
 import scala.language.dynamics
 import scala.reflect.runtime.universe._
 import scala.util.DynamicVariable
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Future, Await}
+import scala.concurrent.{Await, Future}
 
 /**
  * Represents the main kernel API to be used for interaction.
@@ -53,8 +56,8 @@ import scala.concurrent.{Future, Await}
 class Kernel (
   private val _config: Config,
   private val actorLoader: ActorLoader,
-  val interpreterManager: InterpreterManager
-) extends KernelLike with LogLike {
+  val interpreterManager: InterpreterManager,
+  val dependencyDownloader: DependencyDownloader) extends KernelLike with LogLike {
 
   /**
    * Jars that have been added to the kernel
@@ -117,7 +120,7 @@ class Kernel (
    */
   val data: java.util.Map[String, Any] = new ConcurrentHashMap[String, Any]()
 
-  val interpreter = interpreterManager.defaultInterpreter.get
+  override def interpreter: Interpreter = interpreterManager.defaultInterpreter.get
 
   /**
    * Handles the output of interpreting code.
