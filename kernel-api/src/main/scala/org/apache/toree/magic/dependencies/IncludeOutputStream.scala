@@ -23,10 +23,5 @@ import org.apache.toree.magic.Magic
 trait IncludeOutputStream {
   this: Magic =>
 
-  protected def newOutputStream(
-    newOutputStream: OutputStream
-  ) = _outputStream = newOutputStream
-
-  private var _outputStream: OutputStream = _
-  def outputStream: OutputStream = _outputStream
+  def outputStream: OutputStream = Console.out
 }
