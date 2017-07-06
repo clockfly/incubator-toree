@@ -103,7 +103,7 @@ class Kernel (
   /**
    * Represents magics available through the kernel.
    */
-  val magics = new MagicManager()
+  val magics = new MagicManager(this)
 
   /**
    * Represents magic parsing functionality.
@@ -324,7 +324,7 @@ class Kernel (
       logger.info("Setting deployMode to client")
       conf.set("spark.submit.deployMode", "client")
     }
-
+    conf.set("spark.master", "local")
     conf
   }
 

@@ -23,7 +23,7 @@ import org.apache.toree.magic.Magic
 trait IncludeKernel {
   this: Magic =>
 
-  protected def init(newKernel: KernelLike) = _kernel = newKernel
+  def init(newKernel: KernelLike) = _kernel = newKernel
 
   private var _kernel: KernelLike = _
   def kernel: KernelLike = _kernel

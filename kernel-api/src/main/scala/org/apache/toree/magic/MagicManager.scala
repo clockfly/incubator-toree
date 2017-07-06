@@ -17,10 +17,34 @@
 
 package org.apache.toree.magic
 
+import org.apache.toree.kernel.api.KernelLike
+import org.apache.toree.magic.dependencies.IncludeKernel
 import org.slf4j.LoggerFactory
+
 import scala.language.dynamics
 
-class MagicManager extends Dynamic {
+class MagicManager(kernel: KernelLike) extends Dynamic {
+  private val magics: Map[String, Magic] = Map(
+    "sql" -> loadMagic("org.apache.toree.magic.builtin.Sql"),
+    "scala" -> loadMagic("org.apache.toree.magic.builtin.Scala"),
+    "sparkR" -> loadMagic("org.apache.toree.magic.builtin.SparkR"),
+    "html" -> loadMagic("org.apache.toree.magic.builtin.Html"),
+    "javascript" -> loadMagic("org.apache.toree.magic.builtin.JavaScript"),
+    "pyspark" -> loadMagic("org.apache.toree.magic.builtin.PySpark"),
+    "dataframe" -> loadMagic("org.apache.toree.magic.builtin.DataFrame"),
+    "AddJar" -> loadMagic("org.apache.toree.magic.builtin.AddJar"),
+    "AddDeps" -> loadMagic("org.apache.toree.magic.builtin.AddDeps")
+  )
+
+  private def loadMagic(className: String): Magic = {
+    val magic = Class.forName(className).newInstance().asInstanceOf[Magic]
+    magic match {
+      case includeKernel: IncludeKernel => includeKernel.init(kernel)
+      case _ => Unit
+    }
+    magic
+  }
+
   protected val logger = LoggerFactory.getLogger(this.getClass.getName)
   /**
    * Checks if the provided magic is a line magic.
@@ -49,8 +73,6 @@ class MagicManager extends Dynamic {
    */
   @throws[MagicNotFoundException]
   def findMagic(name: String): Magic = {
-
-    // TODO: Find a magic by passing a name.
-    null
+    magics.getOrElse(name, null)
   }
 }

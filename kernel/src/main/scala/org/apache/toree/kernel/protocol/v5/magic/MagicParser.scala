@@ -103,7 +103,7 @@ class MagicParser(private val magicManager: MagicManager) {
    * @return equivalent kernel method call
    */
   protected[magic] def substitute(magicName: String, args: String): String =
-    s"""$kernelObjectName.$magicName(\"\"\"$args\"\"\")"""
+    s"""$kernelObjectName.findMagic(\"$magicName\").execute(\"\"\"$args\"\"\")"""
 
   /**
    * Formats a given line of code representing a line magic invocation into an
