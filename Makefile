@@ -41,15 +41,15 @@ ENV_OPTS:=APACHE_SPARK_VERSION=$(APACHE_SPARK_VERSION) VERSION=$(VERSION) IS_SNA
 ASSEMBLY_JAR:=toree-assembly-$(VERSION)$(SNAPSHOT).jar
 
 help:
-	@echo '			clean - clean build files'
-	@echo '		release - creates packaged distribution'
+	@echo '	clean - clean build files'
+	@echo '	release - creates packaged distribution'
 
 clean-dist:
 	-rm -r dist
 
 clean: VM_WORKDIR=/src/toree-kernel
 clean: clean-dist
-	$($(ENV_OPTS) sbt clean)
+	$(ENV_OPTS) sbt clean
 	rm -r `find . -name target -type d`
 
 target/scala-$(SCALA_VERSION)/$(ASSEMBLY_JAR): VM_WORKDIR=/src/toree-kernel
@@ -57,7 +57,7 @@ target/scala-$(SCALA_VERSION)/$(ASSEMBLY_JAR): ${shell find ./*/src/main/**/*}
 target/scala-$(SCALA_VERSION)/$(ASSEMBLY_JAR): ${shell find ./*/build.sbt}
 target/scala-$(SCALA_VERSION)/$(ASSEMBLY_JAR): ${shell find ./project/*.scala} ${shell find ./project/*.sbt}
 target/scala-$(SCALA_VERSION)/$(ASSEMBLY_JAR): dist/toree-legal project/build.properties build.sbt
-	$($(ENV_OPTS) sbt root/assembly)
+	$(ENV_OPTS) sbt root/assembly
 
 dist/toree/lib: target/scala-$(SCALA_VERSION)/$(ASSEMBLY_JAR)
 	@mkdir -p dist/toree/lib
