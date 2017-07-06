@@ -54,16 +54,13 @@ object DataFrameResponses {
 }
 
 class DataFrame extends CellMagic with IncludeKernel with IncludeOutputStream with ArgumentParsingSupport with LogLike {
-  private var _dataFrameConverter: DataFrameConverter = _
+  private var _dataFrameConverter: DataFrameConverter = new DataFrameConverter
   private val outputTypeMap = Map[String, String](
     "html" -> MIMEType.TextHtml,
     "csv" -> MIMEType.PlainText,
     "json" -> MIMEType.ApplicationJson
   )
 
-  def initMethod(dataFrameConverter: DataFrameConverter) = {
-    _dataFrameConverter = dataFrameConverter
-  }
   private def printStream = new PrintStream(outputStream)
   
   private val _outputType = parser.accepts(

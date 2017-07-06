@@ -43,7 +43,7 @@ object ScalaDisplayers {
 
   Displayers.register(classOf[MagicOutput], new Displayer[MagicOutput] {
     override def display(data: MagicOutput): util.Map[String, String] = toJava {
-      data.asMap
+      data.asMap + (MIMEType.PlainText -> "TEXT OUTPUT")
     }
   })
 

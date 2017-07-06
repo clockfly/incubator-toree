@@ -27,14 +27,14 @@ import org.apache.toree.magic.dependencies.IncludeKernel
 class Sql extends CellMagic with IncludeKernel {
 
   override def execute(code: String): MagicOutput = {
-    val sparkR = kernel.interpreter("SQL")
+    val sql = kernel.interpreter("SQL")
 
-    if (sparkR.isEmpty || sparkR.get == null)
+    if (sql.isEmpty || sql.get == null)
       throw new SqlException("SQL is not available!")
 
-    sparkR.get match {
-      case sparkRInterpreter: SqlInterpreter =>
-        val (_, output) = sparkRInterpreter.interpret(code)
+    sql.get match {
+      case sqlIntepreter: SqlInterpreter =>
+        val (_, output) = sqlIntepreter.interpret(code)
         output match {
           case Left(executeOutput) =>
             MagicOutput(executeOutput.toSeq:_*)

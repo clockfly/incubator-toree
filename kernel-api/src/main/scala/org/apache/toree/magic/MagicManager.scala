@@ -25,15 +25,17 @@ import scala.language.dynamics
 
 class MagicManager(kernel: KernelLike) extends Dynamic {
   private val magics: Map[String, Magic] = Map(
+    "lsmagic" -> loadMagic("org.apache.toree.magic.builtin.LSMagic"),
     "sql" -> loadMagic("org.apache.toree.magic.builtin.Sql"),
+    "sparksql" -> loadMagic("org.apache.toree.magic.builtin.Sql"),
     "scala" -> loadMagic("org.apache.toree.magic.builtin.Scala"),
-    "sparkR" -> loadMagic("org.apache.toree.magic.builtin.SparkR"),
+    "sparkr" -> loadMagic("org.apache.toree.magic.builtin.SparkR"),
     "html" -> loadMagic("org.apache.toree.magic.builtin.Html"),
     "javascript" -> loadMagic("org.apache.toree.magic.builtin.JavaScript"),
     "pyspark" -> loadMagic("org.apache.toree.magic.builtin.PySpark"),
     "dataframe" -> loadMagic("org.apache.toree.magic.builtin.DataFrame"),
-    "AddJar" -> loadMagic("org.apache.toree.magic.builtin.AddJar"),
-    "AddDeps" -> loadMagic("org.apache.toree.magic.builtin.AddDeps")
+    "addjar" -> loadMagic("org.apache.toree.magic.builtin.AddJar"),
+    "adddeps" -> loadMagic("org.apache.toree.magic.builtin.AddDeps")
   )
 
   private def loadMagic(className: String): Magic = {
@@ -73,6 +75,6 @@ class MagicManager(kernel: KernelLike) extends Dynamic {
    */
   @throws[MagicNotFoundException]
   def findMagic(name: String): Magic = {
-    magics.getOrElse(name, null)
+    magics.getOrElse(name.toLowerCase, null)
   }
 }
