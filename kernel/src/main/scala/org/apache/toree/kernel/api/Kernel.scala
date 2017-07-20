@@ -327,7 +327,6 @@ class Kernel (
       logger.info("Setting deployMode to client")
       conf.set("spark.submit.deployMode", "client")
     }
-    conf.set("spark.master", "local")
     conf
   }
 
