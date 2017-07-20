@@ -21,8 +21,9 @@ import org.apache.toree.kernel.protocol.v5._
 import org.apache.toree.kernel.protocol.v5.content.KernelInfoReply
 import org.apache.toree.kernel.protocol.v5.kernel.ActorLoader
 import org.apache.toree.utils.LogLike
-
 import scala.concurrent._
+
+import org.apache.toree.global.IOThreadPool
 
 /**
  * Receives a KernelInfoRequest KernelMessage and returns a KernelInfoReply
@@ -32,7 +33,7 @@ class KernelInfoRequestHandler(actorLoader: ActorLoader, languageInfo: LanguageI
   extends BaseHandler(actorLoader) with LogLike
 {
   def process(kernelMessage: KernelMessage): Future[_] = {
-    import scala.concurrent.ExecutionContext.Implicits.global
+    implicit val ioPool = IOThreadPool.get
     Future {
       logger.debug("Sending kernel info reply message")
 

@@ -21,9 +21,10 @@ import java.util.concurrent.{Semaphore, TimeUnit}
 import org.apache.toree.interpreter.broker.BrokerService
 import org.apache.toree.kernel.interpreter.sparkr.SparkRTypes.{Code, CodeResults}
 import org.slf4j.LoggerFactory
-
 import scala.concurrent.Future
 import scala.tools.nsc.interpreter._
+
+import org.apache.toree.global.IOThreadPool
 
 /**
  * Represents the service that provides the high-level interface between the
@@ -72,7 +73,7 @@ class SparkRService(
 
     val initialized = new Semaphore(0)
     val classLoader = SparkRBridge.getClass.getClassLoader
-    import scala.concurrent.ExecutionContext.Implicits.global
+    implicit val ioPool = IOThreadPool.get
     val rBackendRun = Future {
       logger.debug("Initializing RBackend")
       rBackendPort = rBackend.init(classLoader)

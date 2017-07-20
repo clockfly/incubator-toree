@@ -21,8 +21,9 @@ import org.apache.toree.interpreter.InterpreterTypes.ExecuteOutput
 import org.apache.toree.interpreter.Results.Result
 import org.apache.toree.interpreter.broker.BrokerTypes.CodeResults
 import org.apache.toree.interpreter.{ExecuteError, ExecuteFailure, Results}
-
 import scala.concurrent.Future
+
+import org.apache.toree.global.IOThreadPool
 
 /**
  * Represents a utility that can transform raw broker information to
@@ -40,7 +41,7 @@ class BrokerTransformer {
   def transformToInterpreterResult(futureResult: Future[CodeResults]):
     Future[(Result, Either[ExecuteOutput, ExecuteFailure])] =
   {
-    import scala.concurrent.ExecutionContext.Implicits.global
+    implicit val ioPool = IOThreadPool.get
 
     futureResult
       .map(results => (Results.Success, Left(Map("text/plain" -> results))))

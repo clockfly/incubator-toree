@@ -21,8 +21,9 @@ import org.apache.toree.communication.utils.OrderedSupport
 import org.apache.toree.kernel.protocol.v5._
 import org.apache.toree.kernel.protocol.v5.kernel.ActorLoader
 import org.apache.toree.utils.MessageLogSupport
-
 import scala.concurrent.Future
+
+import org.apache.toree.global.IOThreadPool
 
 abstract class BaseHandler(actorLoader: ActorLoader) extends OrderedSupport
   with MessageLogSupport {
@@ -44,7 +45,7 @@ abstract class BaseHandler(actorLoader: ActorLoader) extends OrderedSupport
 
       // Process the message
       logKernelMessageAction("Processing", kernelMessage)
-      import scala.concurrent.ExecutionContext.Implicits.global
+      implicit val ioPool = IOThreadPool.get
       val processFuture = process(kernelMessage)
 
       // Send the idle message since message has been processed

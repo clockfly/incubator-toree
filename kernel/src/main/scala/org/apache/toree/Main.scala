@@ -17,9 +17,14 @@
 
 package org.apache.toree
 
+import java.util.concurrent.atomic.AtomicLong
+
 import org.apache.toree.boot.layer._
 import org.apache.toree.boot.{CommandLineOptions, KernelBootstrap}
 import org.apache.toree.kernel.BuildInfo
+import java.util.concurrent.{Executors, ThreadFactory}
+
+import org.apache.toree.global.IOThreadPool
 
 object Main extends App {
   private val options = new CommandLineOptions(args)
@@ -32,6 +37,9 @@ object Main extends App {
     println(s"Scala Version:        ${BuildInfo.scalaVersion}")
     println(s"Apache Spark Version: ${BuildInfo.sparkVersion}")
   } else {
+    // Initialze the IO thread pool for IO Operations.
+    IOThreadPool.init(Thread.currentThread().getContextClassLoader)
+
     (new KernelBootstrap(options.toConfig)
       with StandardBareInitialization
       with StandardComponentInitialization

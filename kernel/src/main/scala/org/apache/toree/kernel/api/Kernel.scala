@@ -357,33 +357,8 @@ class Kernel (
 
   private lazy val defaultSparkConf: SparkConf = createSparkConf(new SparkConf())
 
-  override def sparkSession: SparkSession = {
-    defaultSparkConf.getOption("spark.master") match {
-      case Some(master) if !master.contains("local") =>
-        // when connecting to a remote cluster, the first call to getOrCreate
-        // may create a session and take a long time, so this starts a future
-        // to get the session. if it take longer than 100 ms, then print a
-        // message to the user that Spark is starting.
-        import scala.concurrent.ExecutionContext.Implicits.global
-        val sessionFuture = Future {
-          SparkSession.builder.config(defaultSparkConf).getOrCreate
-        }
-
-        try {
-          Await.result(sessionFuture, Duration(100, TimeUnit.MILLISECONDS))
-        } catch {
-          case timeout: TimeoutException =>
-            // getting the session is taking a long time, so assume that Spark
-            // is starting and print a message
-            display.content(
-              MIMEType.PlainText, "Waiting for a Spark session to start...")
-            Await.result(sessionFuture, Duration.Inf)
-        }
-
-      case _ =>
-        SparkSession.builder.config(defaultSparkConf).getOrCreate
-    }
-  }
+  override def sparkSession: SparkSession =
+    SparkSession.builder.config(defaultSparkConf).getOrCreate
 
   override def sparkContext: SparkContext = sparkSession.sparkContext
   override def sparkConf: SparkConf = sparkSession.sparkContext.getConf

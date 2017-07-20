@@ -17,14 +17,14 @@
 
 package org.apache.toree.kernel.protocol.v5.handler
 
-import org.apache.toree.kernel.protocol.v5.content.{ShutdownReply}
-import org.apache.toree.kernel.protocol.v5.kernel.{ActorLoader}
+import org.apache.toree.kernel.protocol.v5.content.ShutdownReply
+import org.apache.toree.kernel.protocol.v5.kernel.ActorLoader
 import org.apache.toree.kernel.protocol.v5._
 import org.apache.toree.security.KernelSecurityManager
 import org.apache.toree.utils.MessageLogSupport
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+import org.apache.toree.global.IOThreadPool
 
 /**
  * Represents the handler to shutdown the kernel
@@ -35,6 +35,8 @@ class ShutdownHandler(
   actorLoader: ActorLoader
 ) extends BaseHandler(actorLoader) with MessageLogSupport
 {
+
+  implicit val ioPool = IOThreadPool.get
   override def process(kernelMessage: KernelMessage): Future[_] = Future {
     logKernelMessageAction("Initiating Shutdown request for", kernelMessage)
 

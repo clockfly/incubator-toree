@@ -21,9 +21,10 @@ import java.io.ByteArrayOutputStream
 import org.apache.toree.interpreter.broker.BrokerService
 import org.apache.toree.kernel.api.KernelLike
 import org.apache.toree.kernel.interpreter.sql.SqlTypes._
-
 import scala.concurrent.Future
 import scala.tools.nsc.interpreter._
+
+import org.apache.toree.global.IOThreadPool
 
 /**
  * Represents the service that provides the high-level interface between the
@@ -33,7 +34,7 @@ import scala.tools.nsc.interpreter._
  *                   queries
  */
 class SqlService(private val kernel: KernelLike) extends BrokerService {
-  import scala.concurrent.ExecutionContext.Implicits.global
+  implicit val ioPool = IOThreadPool.get
 
   @volatile private var _isRunning: Boolean = false
   override def isRunning: Boolean = _isRunning

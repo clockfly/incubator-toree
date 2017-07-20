@@ -22,17 +22,19 @@ import org.apache.toree.kernel.protocol.v5._
 import org.apache.toree.kernel.protocol.v5.content._
 import org.apache.toree.kernel.protocol.v5.kernel.{ActorLoader, Utilities}
 import Utilities._
-import org.apache.toree.utils.{MessageLogSupport, LogLike}
+import org.apache.toree.utils.{LogLike, MessageLogSupport}
 import play.api.data.validation.ValidationError
 import play.api.libs.json.{JsPath, Json}
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Success
+
+import org.apache.toree.global.IOThreadPool
 
 class CodeCompleteHandler(actorLoader: ActorLoader)
   extends BaseHandler(actorLoader) with MessageLogSupport
 {
+  implicit val ioPool = IOThreadPool.get
+
   override def process(kernelMessage: KernelMessage): Future[_] = {
     logKernelMessageAction("Generating code completion for", kernelMessage)
     Utilities.parseAndHandle(

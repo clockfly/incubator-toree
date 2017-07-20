@@ -19,7 +19,7 @@ package org.apache.toree.kernel.protocol.v5.handler
 
 import akka.actor.ActorSelection
 import akka.pattern.ask
-import org.apache.toree.global.{ExecuteRequestState, ExecutionCounter}
+import org.apache.toree.global.{ExecuteRequestState, ExecutionCounter, IOThreadPool}
 import org.apache.toree.kernel.api.{Kernel, KernelLike}
 import org.apache.toree.kernel.protocol.v5._
 import org.apache.toree.kernel.protocol.v5.content._
@@ -30,7 +30,6 @@ import Utilities._
 import org.apache.toree.utils._
 import play.api.data.validation.ValidationError
 import play.api.libs.json.JsPath
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.util.{Failure, Success}
 
@@ -46,6 +45,8 @@ class ExecuteRequestHandler(
   private val actorLoader: ActorLoader,
   private val kernel: Kernel
 ) extends BaseHandler(actorLoader) with LogLike {
+  implicit val ioPool = IOThreadPool.get
+
   override def process(km: KernelMessage): Future[_] = {
     // Mark the message as our new incoming kernel message for execution
     ExecuteRequestState.processIncomingKernelMessage(km)

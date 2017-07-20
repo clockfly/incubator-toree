@@ -19,8 +19,10 @@ package org.apache.toree.kernel.interpreter.scala
 
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.ExecutionException
+
 import com.typesafe.config.{Config, ConfigFactory}
 import jupyter.Displayers
+
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.repl.Main
@@ -38,6 +40,8 @@ import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter.{IR, OutputStream}
 import scala.tools.nsc.util.ClassPath
 import scala.util.matching.Regex
+
+import org.apache.toree.global.IOThreadPool
 
 class ScalaInterpreter(private val config:Config = ConfigFactory.load) extends Interpreter with ScalaInterpreterSpecific {
   import ScalaInterpreter._
@@ -239,7 +243,7 @@ class ScalaInterpreter(private val config:Config = ConfigFactory.load) extends I
    }
 
    protected def interpretMapToCustomResult(future: Future[IR.Result]): Future[Results.Result] = {
-     import scala.concurrent.ExecutionContext.Implicits.global
+     implicit val ioPool = IOThreadPool.get
      future map {
        case IR.Success             => Results.Success
        case IR.Error               => Results.Error
@@ -251,7 +255,7 @@ class ScalaInterpreter(private val config:Config = ConfigFactory.load) extends I
 
    protected def interpretMapToResultAndOutput(future: Future[Results.Result]):
       Future[(Results.Result, Either[Map[String, String], ExecuteError])] = {
-     import scala.concurrent.ExecutionContext.Implicits.global
+     implicit val ioPool = IOThreadPool.get
 
      future map {
        case result @ (Results.Success | Results.Incomplete) =>
