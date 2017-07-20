@@ -15,13 +15,14 @@
  *  limitations under the License
  */
 package org.apache.toree.kernel.interpreter.sparkr
+import org.apache.toree.utils.ClassUtil
 
 /**
  * Provides reflective access into the backend R component that is not
  * publically accessible.
  */
 class ReflectiveRBackend {
-  private val rBackendClass = Class.forName("org.apache.spark.api.r.RBackend")
+  private val rBackendClass = ClassUtil.forName("org.apache.spark.api.r.RBackend")
   private val rBackendInstance = rBackendClass.newInstance()
 
   /**

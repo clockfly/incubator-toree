@@ -20,8 +20,9 @@ package org.apache.toree.magic
 import org.apache.toree.kernel.api.KernelLike
 import org.apache.toree.magic.dependencies.IncludeKernel
 import org.slf4j.LoggerFactory
-
 import scala.language.dynamics
+
+import org.apache.toree.utils.ClassUtil
 
 class MagicManager(kernel: KernelLike) extends Dynamic {
   private val magics: Map[String, Magic] = Map(
@@ -39,7 +40,7 @@ class MagicManager(kernel: KernelLike) extends Dynamic {
   )
 
   private def loadMagic(className: String): Magic = {
-    val magic = Class.forName(className).newInstance().asInstanceOf[Magic]
+    val magic = ClassUtil.forName(className).newInstance().asInstanceOf[Magic]
     magic match {
       case includeKernel: IncludeKernel => includeKernel.init(kernel)
       case _ => Unit

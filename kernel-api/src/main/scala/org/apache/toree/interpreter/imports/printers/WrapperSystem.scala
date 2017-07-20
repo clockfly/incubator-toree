@@ -19,7 +19,7 @@ package org.apache.toree.interpreter.imports.printers
 
 import java.io._
 
-import org.apache.toree.utils.DynamicReflectionSupport
+import org.apache.toree.utils.{ClassUtil, DynamicReflectionSupport}
 
 /**
  * Represents a wrapper for java.lang.System.
@@ -31,7 +31,7 @@ class WrapperSystem(
   private val inStream: InputStream,
   private val outStream: OutputStream,
   private val errStream: OutputStream
-) extends DynamicReflectionSupport(Class.forName("java.lang.System"), null){
+) extends DynamicReflectionSupport(ClassUtil.forName("java.lang.System"), null){
   require(inStream != null)
   require(outStream != null)
   require(errStream != null)

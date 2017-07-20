@@ -22,6 +22,7 @@ import com.typesafe.config.Config
 import org.apache.toree.interpreter._
 import scala.collection.JavaConverters._
 
+import org.apache.toree.utils.ClassUtil
 import org.slf4j.LoggerFactory
 
 case class InterpreterManager(
@@ -89,15 +90,15 @@ object InterpreterManager {
    */
   private def instantiate(className:String, config:Config):Interpreter = {
     try {
-      Class
+      ClassUtil
         .forName(className)
-        .getConstructor(Class.forName("com.typesafe.config.Config"))
+        .getConstructor(ClassUtil.forName("com.typesafe.config.Config"))
         .newInstance(config).asInstanceOf[Interpreter]
     }
     catch {
       case e: NoSuchMethodException =>
         logger.debug("Using default constructor for class " + className)
-        Class
+        ClassUtil
           .forName(className)
           .newInstance().asInstanceOf[Interpreter]
     }
