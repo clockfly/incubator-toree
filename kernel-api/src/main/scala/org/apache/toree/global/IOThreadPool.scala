@@ -23,7 +23,7 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 object IOThreadPool {
 
-  private var executorService: ExecutorService = null
+  private var executorService: ExecutionContext = null
   def init(classloader: ClassLoader): Unit = {
     val pool = Executors.newCachedThreadPool(
       new ThreadFactory {
@@ -41,7 +41,7 @@ object IOThreadPool {
     executorService = ExecutionContext.fromExecutorService(pool)
   }
 
-  def get: ExecutorService = {
+  def get: ExecutionContext = {
     if (executorService == null) {
       throw new Exception("IOPool not initialized")
     } else {
